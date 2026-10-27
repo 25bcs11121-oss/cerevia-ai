@@ -84,8 +84,7 @@ public class ChatController {
 
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(
-                            "https://generativelanguage.googleapis.com/"
-                            + "v1beta/models/gemini-3.8-flash:generateContent"))
+                            "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent"))
                     .timeout(Duration.ofSeconds(90))
                     .header("Content-Type", "application/json")
                     .header("x-goog-api-key", apiKey)
