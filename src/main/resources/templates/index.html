@@ -39,7 +39,6 @@
             margin-bottom: 8px;
         }
 
-        /* Sidebar logo */
         .brand-logo {
             width: 36px;
             height: 36px;
@@ -114,10 +113,9 @@
             max-width: 760px;
         }
 
-        /* Main Cerevia logo */
         .logo {
-            width: 76px;
-            height: 76px;
+            width: 88px;
+            height: 88px;
             display: grid;
             place-items: center;
             margin: 0 auto 22px;
@@ -205,7 +203,6 @@
             margin-left: 35px;
         }
 
-        /* AI response row with Cerevia logo */
         .bot-row {
             display: flex;
             align-items: flex-start;
@@ -500,7 +497,13 @@
                     })
                 });
 
-                const data = await response.json();
+                let data;
+
+                try {
+                    data = await response.json();
+                } catch {
+                    data = {};
+                }
 
                 loadingMessage.remove();
 
