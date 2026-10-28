@@ -30,10 +30,21 @@
         }
 
         .brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
             font-size: 23px;
             font-weight: 700;
             letter-spacing: -0.7px;
             margin-bottom: 8px;
+        }
+
+        /* Sidebar logo */
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
         }
 
         .brand span,
@@ -103,17 +114,23 @@
             max-width: 760px;
         }
 
+        /* Main Cerevia logo */
         .logo {
-            width: 68px;
-            height: 68px;
+            width: 76px;
+            height: 76px;
             display: grid;
             place-items: center;
             margin: 0 auto 22px;
+            background: transparent;
             border-radius: 22px;
-            background: linear-gradient(135deg, #8b5cf6, #4f46e5);
-            box-shadow: 0 0 45px #6d5df333;
-            font-size: 30px;
-            font-weight: bold;
+            filter: drop-shadow(0 0 18px #8b5cf655);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         h1 {
@@ -188,10 +205,30 @@
             margin-left: 35px;
         }
 
+        /* AI response row with Cerevia logo */
+        .bot-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 14px 20px 14px 0;
+        }
+
+        .bot-avatar {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            object-fit: contain;
+            margin-top: 5px;
+            display: block;
+            filter: drop-shadow(0 0 7px #8b5cf633);
+        }
+
         .bot-message {
+            flex: 1;
+            min-width: 0;
             background: #151923;
             border: 1px solid #292e3d;
-            margin-right: 20px;
+            margin: 0;
         }
 
         .input-box {
@@ -267,13 +304,36 @@
             .welcome {
                 margin-top: 35px;
             }
+
+            .logo {
+                width: 68px;
+                height: 68px;
+            }
+
+            .bot-row {
+                margin-right: 0;
+                gap: 8px;
+            }
+
+            .bot-avatar {
+                width: 26px;
+                height: 26px;
+            }
         }
     </style>
 </head>
 
 <body>
     <aside class="sidebar">
-        <div class="brand">Cerevia <span>AI</span></div>
+        <div class="brand">
+            <img
+                src="/images/cerevia-logo.png"
+                alt="Cerevia logo"
+                class="brand-logo"
+            >
+            <div>Cerevia <span>AI</span></div>
+        </div>
+
         <div class="tagline">Knowledge Beyond Questions.</div>
 
         <button class="new-chat" id="newChat" type="button">
@@ -291,7 +351,12 @@
         </header>
 
         <section class="welcome" id="welcome">
-            <div class="logo">C</div>
+            <div class="logo">
+                <img
+                    src="/images/cerevia-logo.png"
+                    alt="Cerevia AI logo"
+                >
+            </div>
 
             <h1>Think beyond with <span>Cerevia.</span></h1>
 
@@ -301,26 +366,34 @@
             </p>
 
             <div class="suggestions">
-                <button class="suggestion"
-                        data-question="Explain Java OOP concepts with simple examples.">
+                <button
+                    class="suggestion"
+                    data-question="Explain Java OOP concepts with simple examples."
+                >
                     <strong>📚 Learn something</strong>
                     Explain Java OOP concepts with examples
                 </button>
 
-                <button class="suggestion"
-                        data-question="Help me create a study plan for my exams.">
+                <button
+                    class="suggestion"
+                    data-question="Help me create a study plan for my exams."
+                >
                     <strong>🎯 Plan your goals</strong>
                     Build a study plan for my exams
                 </button>
 
-                <button class="suggestion"
-                        data-question="Give me an interesting beginner-friendly Java project idea.">
+                <button
+                    class="suggestion"
+                    data-question="Give me an interesting beginner-friendly Java project idea."
+                >
                     <strong>💡 Explore ideas</strong>
                     Find an interesting Java project
                 </button>
 
-                <button class="suggestion"
-                        data-question="Explain how artificial intelligence works in simple language.">
+                <button
+                    class="suggestion"
+                    data-question="Explain how artificial intelligence works in simple language."
+                >
                     <strong>🧠 Understand AI</strong>
                     How does artificial intelligence work?
                 </button>
@@ -362,9 +435,32 @@
         let isSending = false;
 
         function addMessage(text, type) {
-            const message = document.createElement("div");
-            message.className = "message " + type;
-            message.textContent = text;
+            let message;
+
+            if (type === "bot-message") {
+                message = document.createElement("div");
+                message.className = "bot-row";
+
+                const avatar = document.createElement("img");
+                avatar.className = "bot-avatar";
+                avatar.src = "/images/cerevia-logo.png";
+                avatar.alt = "Cerevia AI";
+
+                avatar.onerror = function () {
+                    this.style.display = "none";
+                };
+
+                const bubble = document.createElement("div");
+                bubble.className = "message bot-message";
+                bubble.textContent = text;
+
+                message.appendChild(avatar);
+                message.appendChild(bubble);
+            } else {
+                message = document.createElement("div");
+                message.className = "message " + type;
+                message.textContent = text;
+            }
 
             messages.appendChild(message);
             messages.scrollTop = messages.scrollHeight;
@@ -410,14 +506,16 @@
 
                 if (!response.ok) {
                     addMessage(
-                        data.reply || "The AI service returned an error. Please try again.",
+                        data.reply ||
+                        "The AI service returned an error. Please try again.",
                         "bot-message"
                     );
                     return;
                 }
 
                 addMessage(
-                    data.reply || "The AI returned an empty response. Please try again.",
+                    data.reply ||
+                    "The AI returned an empty response. Please try again.",
                     "bot-message"
                 );
 
@@ -425,7 +523,7 @@
                 loadingMessage.remove();
 
                 addMessage(
-                    "Could not connect to the Cerevia server. Please check that the server is running and try again.",
+                    "Could not connect to the Cerevia server. Please try again.",
                     "bot-message"
                 );
 
