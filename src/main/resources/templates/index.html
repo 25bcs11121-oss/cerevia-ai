@@ -203,7 +203,7 @@
             margin-left: 35px;
         }
 
-        /* AI response with Cerevia logo avatar */
+        /* AI response row with Cerevia logo avatar */
         .bot-row {
             display: flex;
             align-items: flex-start;
@@ -492,7 +492,13 @@
                     })
                 });
 
-                const data = await response.json();
+                let data;
+
+                try {
+                    data = await response.json();
+                } catch {
+                    data = {};
+                }
 
                 loadingMessage.remove();
 
